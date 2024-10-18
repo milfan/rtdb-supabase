@@ -5,6 +5,7 @@ import (
 	"github.com/milfan/neoten-lib/lib_response_gin"
 	"github.com/milfan/rtdb-supabase/src/app/modules/usecase_module"
 	"github.com/milfan/rtdb-supabase/src/infra/constants"
+	interface_requests "github.com/milfan/rtdb-supabase/src/interface/requests"
 )
 
 type (
@@ -19,13 +20,19 @@ type (
 
 // Persist implements IOrderController.
 func (c *orderController) Persist(ctx *gin.Context) {
-	if err := c.usecaseModule.OrderUsecase.Persist(ctx); err != nil {
+	var req interface_requests.OrderCreateRequest
+	if err := req.Validate(ctx); err != nil {
+		c.response.HttpError(ctx, err)
+		return
+	}
+
+	if err := c.usecaseModule.OrderUsecase.Persist(ctx, req); err != nil {
 		c.response.HttpError(ctx, err)
 		return
 	}
 	c.response.JSON(
 		ctx,
-		constants.RESPONSE_GET_SUCCESS,
+		constants.RESPONSE_CREATED_SUCCESS,
 		nil,
 		nil,
 	)

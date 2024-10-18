@@ -17,7 +17,7 @@ import (
 	"github.com/milfan/rtdb-supabase/src/app/modules/repository_module"
 	"github.com/milfan/rtdb-supabase/src/app/modules/usecase_module"
 	"github.com/milfan/rtdb-supabase/src/infra/configs/app_config"
-	"github.com/milfan/rtdb-supabase/src/interface/interface_routes"
+	"github.com/milfan/rtdb-supabase/src/interface/routes"
 )
 
 func NewServer(
@@ -40,8 +40,8 @@ func NewServer(
 		usecaseModules,
 	)
 
-	interface_routes.DefaultRoute(server)
-	interface_routes.AllRoute(
+	routes.DefaultRoute(server)
+	routes.AllRoute(
 		server,
 		response,
 		conf,

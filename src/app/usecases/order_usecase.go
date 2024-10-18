@@ -6,11 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	infra_repositories "github.com/milfan/rtdb-supabase/src/infra/repositories"
+	interface_requests "github.com/milfan/rtdb-supabase/src/interface/requests"
 )
 
 type (
 	IOrderUsecase interface {
-		Persist(ctx *gin.Context) error
+		Persist(ctx *gin.Context, request interface_requests.OrderCreateRequest) error
 	}
 	orderUsecase struct {
 		rtdbRepository infra_repositories.IRTDBRepository
@@ -18,22 +19,20 @@ type (
 )
 
 // Persist implements IOrderUsecase.
-func (u *orderUsecase) Persist(ctx *gin.Context) error {
+func (u *orderUsecase) Persist(ctx *gin.Context, request interface_requests.OrderCreateRequest) error {
 
 	type payload struct {
-		ID        uint64    `json:"id"`
 		OrderId   uint64    `json:"order_id"`
 		Status    string    `json:"status"`
 		CreatedAt time.Time `json:"created_at"`
 	}
 	data, _ := json.Marshal(payload{
-		ID:        1,
-		OrderId:   1,
+		OrderId:   request.OrderID,
 		Status:    "done",
 		CreatedAt: time.Now(),
 	})
 
-	if err := u.rtdbRepository.Persist(ctx.Request.Context(), data); err != nil {
+	if err := u.rtdbRepository.Persist(ctx.Request.Context(), string(data)); err != nil {
 		return err
 	}
 	return nil

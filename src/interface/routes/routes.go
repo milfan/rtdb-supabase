@@ -1,4 +1,4 @@
-package interface_routes
+package routes
 
 import (
 	"net/http"
