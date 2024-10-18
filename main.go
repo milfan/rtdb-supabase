@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	ginNew := gin.Default()
-	ginNew.Use(gin.Recovery())
+	ginServer := gin.Default()
+	ginServer.Use(gin.Recovery())
 }
