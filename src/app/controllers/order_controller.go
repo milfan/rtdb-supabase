@@ -3,26 +3,30 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/milfan/neoten-lib/lib_response_gin"
+	"github.com/milfan/rtdb-supabase/src/app/modules/usecase_module"
 )
 
 type (
-	ICardStockController interface {
+	IOrderController interface {
 		Persist(ctx *gin.Context)
 	}
-	cardStockController struct {
-		response lib_response_gin.IResponseClient
+	orderController struct {
+		response      lib_response_gin.IResponseClient
+		usecaseModule usecase_module.UsecaseModules
 	}
 )
 
-// Persist implements ICardStockController.
-func (c *cardStockController) Persist(ctx *gin.Context) {
+// Persist implements IOrderController.
+func (c *orderController) Persist(ctx *gin.Context) {
 	panic("unimplemented")
 }
 
-func NewCardStockController(
+func NewOrderController(
 	response lib_response_gin.IResponseClient,
-) ICardStockController {
-	return &cardStockController{
-		response: response,
+	usecaseModule usecase_module.UsecaseModules,
+) IOrderController {
+	return &orderController{
+		response:      response,
+		usecaseModule: usecaseModule,
 	}
 }
