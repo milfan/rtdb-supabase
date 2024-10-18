@@ -1,7 +1,7 @@
 package usecase_module
 
 import (
-	"github.com/milfan/neoten-lib/lib_http_request"
+	"github.com/milfan/rtdb-supabase/src/app/modules/repository_module"
 	app_usecase "github.com/milfan/rtdb-supabase/src/app/usecases"
 )
 
@@ -11,11 +11,12 @@ type UsecaseModules struct {
 }
 
 func LoadUsecaseModules(
-	httpRequestUtils lib_http_request.IHttpRequestUtils,
+	repositoryModule repository_module.RepositoryModules,
 ) UsecaseModules {
+
 	return UsecaseModules{
 		OrderUsecase: app_usecase.NewOrderUsecase(
-			httpRequestUtils,
+			repositoryModule.InfraRepo.RTDBRepository,
 		),
 	}
 }

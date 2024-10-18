@@ -14,6 +14,7 @@ import (
 	"github.com/milfan/neoten-lib/lib_http_request"
 	"github.com/milfan/neoten-lib/lib_response_gin"
 	controller_modules "github.com/milfan/rtdb-supabase/src/app/modules/controller_module"
+	"github.com/milfan/rtdb-supabase/src/app/modules/repository_module"
 	"github.com/milfan/rtdb-supabase/src/app/modules/usecase_module"
 	"github.com/milfan/rtdb-supabase/src/infra/configs/app_config"
 	"github.com/milfan/rtdb-supabase/src/interface/interface_routes"
@@ -26,12 +27,17 @@ func NewServer(
 ) *http.Server {
 	httpRequestUtils := lib_http_request.NewHttpRequestUtils()
 
-	usecaseModule := usecase_module.LoadUsecaseModules(
+	repositoryModules := repository_module.LoadRepositoryModules(
+		conf.RTDBConfig,
 		httpRequestUtils,
+	)
+
+	usecaseModules := usecase_module.LoadUsecaseModules(
+		repositoryModules,
 	)
 	controllerModule := controller_modules.LoadControllers(
 		response,
-		usecaseModule,
+		usecaseModules,
 	)
 
 	interface_routes.DefaultRoute(server)

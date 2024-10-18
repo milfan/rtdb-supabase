@@ -11,6 +11,7 @@ type Config struct {
 	AppConfig  AppConfig
 	HttpConfig HttpConfig
 	DBConfigs  DBConfig
+	RTDBConfig RTDBConfig
 }
 
 type AppConfig struct {
@@ -35,6 +36,12 @@ type DBConfig struct {
 	MaxIddleConnection     int
 	MaxIddleTimeConnection int64
 	MaxLifeTimeConnection  int64
+}
+
+type RTDBConfig struct {
+	Host         string
+	ClientID     string
+	ClientSecret string
 }
 
 var osGetenv = os.Getenv
@@ -89,9 +96,16 @@ func InitAppConfig() Config {
 		httConfig.HttpTimeout = httpTimeout
 	}
 
+	rtdbConfig := RTDBConfig{
+		Host:         osGetenv("RTDB_HOST"),
+		ClientID:     osGetenv("RTDB_CLIENT_ID"),
+		ClientSecret: osGetenv("RTDB_CLIENT_SECRET"),
+	}
+
 	return Config{
 		AppConfig:  appConfig,
 		HttpConfig: httConfig,
 		DBConfigs:  dbConfig,
+		RTDBConfig: rtdbConfig,
 	}
 }

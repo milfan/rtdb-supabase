@@ -2,7 +2,7 @@ package app_usecase
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/milfan/neoten-lib/lib_http_request"
+	infra_repositories "github.com/milfan/rtdb-supabase/src/infra/repositories"
 )
 
 type (
@@ -10,7 +10,7 @@ type (
 		Persist(ctx *gin.Context) error
 	}
 	orderUsecase struct {
-		httpRequestUtils lib_http_request.IHttpRequestUtils
+		rtdbRepository infra_repositories.IRTDBRepository
 	}
 )
 
@@ -20,9 +20,9 @@ func (o *orderUsecase) Persist(ctx *gin.Context) error {
 }
 
 func NewOrderUsecase(
-	httpRequestUtils lib_http_request.IHttpRequestUtils,
+	rtdbRepository infra_repositories.IRTDBRepository,
 ) IOrderUsecase {
 	return &orderUsecase{
-		httpRequestUtils: httpRequestUtils,
+		rtdbRepository: rtdbRepository,
 	}
 }
