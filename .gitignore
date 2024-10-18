@@ -1,0 +1,23 @@
+# IDE File Support
+.vscode/
+.idea/
+
+# env file
+.env
+
+# generate if using comstek/air
+tmp/
+
+# logs
+logs/
+
+
+# report test
+cov-report/
+coverage
+test-report
+
+# swagger yaml
+docs/
+
+bin/

@@ -14,13 +14,13 @@ type Config struct {
 }
 
 type AppConfig struct {
-	AppName   string
-	RunMode   string
-	AppSecret string
+	AppName string
+	RunMode string
 }
 
 type HttpConfig struct {
-	HttpPort string
+	HttpPort    string
+	HttpTimeout int
 }
 
 type DBConfig struct {
@@ -42,9 +42,8 @@ var osGetenv = os.Getenv
 func InitAppConfig() Config {
 
 	appConfig := AppConfig{
-		AppName:   osGetenv("APP_NAME"),
-		RunMode:   osGetenv("RUN_MODE"),
-		AppSecret: osGetenv("APP_SECRET"),
+		AppName: osGetenv("APP_NAME"),
+		RunMode: osGetenv("RUN_MODE"),
 	}
 
 	dbConfig := DBConfig{
@@ -82,7 +81,12 @@ func InitAppConfig() Config {
 	}
 
 	httConfig := HttpConfig{
-		HttpPort: portDefault,
+		HttpPort:    portDefault,
+		HttpTimeout: 120, // default in second
+	}
+	httpTimeout, err := strconv.Atoi(osGetenv("HTTP_TIMEOUT"))
+	if err == nil {
+		httConfig.HttpTimeout = httpTimeout
 	}
 
 	return Config{
