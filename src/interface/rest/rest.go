@@ -1,8 +1,14 @@
 package interface_rest
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/milfan/neoten-lib/lib_http_request"
@@ -40,4 +46,40 @@ func NewServer(
 		Addr:    fmt.Sprintf(":%s", conf.HttpConfig.HttpPort),
 		Handler: server.Handler(),
 	}
+}
+
+func StartService(srv *http.Server) {
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	gracefullShutdown(srv)
+}
+
+func gracefullShutdown(srv *http.Server) {
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal, 1)
+	// kill (no param) default send syscall.SIGTERM
+	// kill -2 is syscall.SIGINT
+	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
+	}
+
+	// Instead of using select with a single case, we directly wait for the context's Done signal.
+	<-ctx.Done()
+	log.Println("timeout of 5 seconds.")
+
+	log.Println("Server exiting")
 }
